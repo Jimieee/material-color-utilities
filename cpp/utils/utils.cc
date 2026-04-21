@@ -22,9 +22,9 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <iomanip>
+#include <sstream>
 #include <string>
-
-#include "absl/strings/str_cat.h"
 
 namespace material_color_utilities {
 
@@ -140,7 +140,12 @@ double RotationDirection(const double from, const double to) {
 // Converts a color in ARGB format to a hexadecimal string in lowercase.
 //
 // For instance: hex_from_argb(0xff012345) == "ff012345"
-std::string HexFromArgb(Argb argb) { return absl::StrCat(absl::Hex(argb)); }
+std::string HexFromArgb(Argb argb) {
+  std::ostringstream stream;
+  stream << std::hex << std::nouppercase << std::setfill('0') << std::setw(8)
+         << static_cast<uint32_t>(argb);
+  return stream.str();
+}
 
 Argb IntFromLstar(const double lstar) {
   double y = YFromLstar(lstar);
@@ -172,6 +177,6 @@ Vec3 MatrixMultiply(Vec3 input, const double matrix[3][3]) {
       input.a * matrix[1][0] + input.b * matrix[1][1] + input.c * matrix[1][2];
   double c =
       input.a * matrix[2][0] + input.b * matrix[2][1] + input.c * matrix[2][2];
-  return (Vec3){a, b, c};
+  return Vec3{a, b, c};
 }
 }  // namespace material_color_utilities
